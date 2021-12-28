@@ -23,9 +23,12 @@ def tasklist(request):
     return Response(serializers.data)
 @api_view(['POST'])
 def taskcreate(request):
-	serializer = taskserializer(data=request.data)
+	tasks=task.objects.all()
+	#serializers=taskserializer(tasks,many=True)
+	serializer=taskserializer(data=request.data,many=isinstance(request.data,list))
 	if serializer.is_valid():
 		serializer.save()
+		""" export part started """
 		data=requests.get("http://127.0.0.1:8000")
 		Data=json.loads(data.content)
 		testdata=Data["Book List"]
@@ -39,4 +42,19 @@ def taskcreate(request):
 				count+=1
 			csv_writer.writerow(test.values())
 		file.close()
+		""" export part ended """
+		
 	return Response(serializer.data)
+@api_view(['GET'])
+def tasksid(request,pk):
+	tasks=task.objects.get(id=pk)
+	serializer=taskserializer(tasks,many=False)
+	return Response(serializer.data)
+@api_view(['POST'])
+def taskupdate(request,pk):
+	tasks=task.objects.get(id=pk)
+	serializershow=taskserializer(tasks)
+	serializer=taskserializer(instance=tasks,data=request.data)
+	if serializer.is_valid():
+		serializer.save()
+		Response(serializer.data,serializershow)

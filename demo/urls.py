@@ -4,4 +4,6 @@ urlpatterns = [
     path('',views.apiOverview, name="api-overview"),
     path('task',views.tasklist,name="getmethod"),
     path('taskcreate',views.taskcreate,name="post"),
+    path('tasks/<str:pk>',views.tasksid,name="get id"),
+    path('taskupdate/<str:pk>',views.taskupdate,name="put"),
 ]
