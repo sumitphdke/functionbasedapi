@@ -43,7 +43,6 @@ def taskcreate(request):
 			csv_writer.writerow(test.values())
 		file.close()
 		""" export part ended """
-		
 	return Response(serializer.data)
 @api_view(['GET'])
 def tasksid(request,pk):
@@ -58,3 +57,8 @@ def taskupdate(request,pk):
 	if serializer.is_valid():
 		serializer.save()
 		Response(serializer.data,serializershow)
+@api_view(['GET'])
+def taskid(request,title):#title is used to pass the title in the url
+	tasks=task.objects.get(title=title)#pass the title in the parameter
+	serializers=titleserializer(tasks)
+	return Response(serializers.data)
